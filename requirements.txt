@@ -1,0 +1,7 @@
+tornado
+mysql-connector-python
+SQLAlchemy
+sockjs-tornado
+psutil
+pyecharts
+pyecharts-snapshot
