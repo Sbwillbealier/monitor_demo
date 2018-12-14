@@ -75,7 +75,6 @@ if __name__ == '__main__':
         **mysql_configs
     )
 
-
     # 创建连接引擎, 指定编码utf-8， 输出日志echo
     engine = create_engine(link, encoding='utf-8', echo=True)
 
