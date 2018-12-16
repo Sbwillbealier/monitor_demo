@@ -6,7 +6,9 @@
 @desc: 路由规则
 """
 from app.views.views import IndexHandler
+from sockjs.tornado import SockJSRouter  # socket专用路由类
+from app.views.view_real_time import RealTimeHandler
 
 urls = [
-    ('/', IndexHandler),
-]
+           ('/', IndexHandler),
+       ] + SockJSRouter(RealTimeHandler, '/real/time').urls
