@@ -7,6 +7,7 @@
 """
 import psutil
 import time
+import datetime
 from pprint import pprint
 
 
@@ -73,6 +74,65 @@ class Monitor(object):
         ]
         return data
 
+    def net(self):
+        """获取网卡信息"""
+
+        # 获取地址信息
+        address = psutil.net_if_addrs()
+        # val.family.name == 'AF_INET' 只保留IPV4的信息
+        address_info = {
+            k: [
+                dict(
+                    family=val.family.name,
+                    address=val.address,
+                    netmask=val.netmask,
+                    broadcast=val.broadcast
+                )
+                for val in v if val.family.name == 'AF_INET'
+            ][0]
+            for k, v in address.items()
+        }
+
+        # 获取输入输出信息
+        io = psutil.net_io_counters(pernic=True)
+        data = [
+            dict(
+                name=k,
+                bytes_sent=v.bytes_sent,
+                bytes_recv=v.bytes_recv,
+                packets_sent=v.packets_sent,
+                packets_recv=v.packets_recv,
+                **address_info[k]
+            )
+            for k, v in io.items()
+        ]
+        return data
+
+    def get_last_boot(self):
+        """获取最近开机时间"""
+        return self.to_datetime(psutil.boot_time())
+
+    def get_user(self):
+        """获取登录用户信息"""
+        users = psutil.users()
+        users_info = [
+            dict(
+                name=u.name,
+                terminal=u.terminal,
+                host=u.host,
+                started=self.to_datetime(u.started),
+                pid=u.pid,
+            )
+            for u in users
+        ]
+        return users_info
+
+    @staticmethod
+    def to_datetime(tm):
+        """时间戳转化成日期"""
+        dt = datetime.datetime.fromtimestamp(tm)
+        return dt.strftime('%Y-%m-%d %H:%M:%S')
+
     @staticmethod
     def bytes_to_gb(value, key):
         """字节转GB"""
@@ -88,5 +148,8 @@ if __name__ == '__main__':
         # pprint(m.cpu())
         # pprint(m.mem())
         # pprint(m.swap())
-        pprint(m.disk())
+        # pprint(m.disk())
+        # pprint(m.net())
+        pprint(m.get_last_boot())
+        pprint(m.get_user())
         time.sleep(1)
