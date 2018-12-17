@@ -5,7 +5,7 @@
 @file:urls.py
 @desc: 路由规则
 """
-from app.views.views import IndexHandler
+from app.views.views_index import IndexHandler
 from sockjs.tornado import SockJSRouter  # socket专用路由类
 from app.views.view_real_time import RealTimeHandler
 

@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+
+{% block head %}
+<!--导入echarts和水球图-->
+<script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts-en.common.min.js"></script>
+<script src="{{ static_url('echarts-liquidfill/echarts-liquidfill.js') }}"></script>
+{% end %}
+
+{% block content %}
+<!--内容部分-->
+<div class="row">
+    <div class="col-md-12">
+        <div class="card text-white bg-dark mb-3">
+            <div class="card-header">CPU信息</div>
+            <div class="card-body">
+                <div class="row">
+                    <!--栅格系统-->
+                    <div class="col-md-6 pad-right">
+                        <div>{% raw data['cpu_liquid'] %}</div>
+                    </div>
+                    <div class="col-md-6 pad-left"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% end %}
