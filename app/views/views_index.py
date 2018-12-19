@@ -5,12 +5,12 @@
 @file:views.py
 @desc: 定义视图函数（handler）
 """
-import tornado.web
 from app.tools.chart import Chart
 from app.tools.monitor import Monitor
+from app.views.views_common import CommonHandler
 
 
-class IndexHandler(tornado.web.RequestHandler):
+class IndexHandler(CommonHandler):
     """首页视图"""
 
     def get(self):

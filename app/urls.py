@@ -7,7 +7,7 @@
 """
 from app.views.views_index import IndexHandler
 from sockjs.tornado import SockJSRouter  # socket专用路由类
-from app.views.view_real_time import RealTimeHandler
+from app.views.views_real_time import RealTimeHandler
 
 urls = [
            ('/', IndexHandler),
