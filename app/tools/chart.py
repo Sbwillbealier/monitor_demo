@@ -5,7 +5,7 @@
 @file:chart.py
 @desc: pyecharts制作部分
 """
-from pyecharts import Liquid
+from pyecharts import Liquid, Gauge
 import datetime
 
 
@@ -31,6 +31,26 @@ class Chart(object):
         liquid.add("", [round(val / 100, 4)])
 
         return liquid.render_embed()  # 返回图表html代码
+
+    def gauge_html(self, chart_id, title, val):
+        """内存、交换分区仪表图"""
+        gauge = Gauge(
+            "{}-{}".format(self.dt, title),
+            title_pos="center",
+            width="100%",
+            title_text_size=14,
+            title_color="white",
+            height=300
+        )
+        gauge.chart_id = chart_id
+        gauge.add(
+            "",
+            "",
+            val,
+            scale_range=[0, 100],
+            is_legend_show=False
+        )
+        return gauge.render_embed()
 
     @property
     def dt(self):

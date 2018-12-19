@@ -9,6 +9,8 @@
     <link href="{{ static_url('dist/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ static_url('css/dashboard.css') }}" rel="stylesheet">
     <script src="{{ static_url('js/analogClock.js') }}"></script>
+    <!--echarts-en.common.min.js可能会导致部件不显示"-->
+    <script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts-en.min.js"></script>
 
     <!--自定义head部分-->
     {% block head %}{% end %}

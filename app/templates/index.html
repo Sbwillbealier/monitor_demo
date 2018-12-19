@@ -2,48 +2,110 @@
 
 {% block head %}
 <!--导入echarts和水球图-->
-<script src="https://cdn.bootcss.com/echarts/4.2.0-rc.2/echarts-en.common.min.js"></script>
 <script src="{{ static_url('echarts-liquidfill/echarts-liquidfill.js') }}"></script>
 {% end %}
 
 {% block content %}
 <!--内容部分-->
 <div class="row">
+    <!--CPU信息-->
     <div class="col-md-12">
         <div class="card text-white bg-dark mb-3">
-            <!--CPU信息-->
             <div class="card-header">CPU信息</div>
             <div class="card-body">
                 <div class="row">
                     <!--栅格系统-->
+                    <!--cpu信息水球图-->
                     <div class="col-md-6 pad-right">
                         <div class="border border-white">{% raw data['cpu_liquid'] %}</div>
                     </div>
+                    <!--单个CPU信息表-->
                     <div class="col-md-6 pad-left">
-                        <table class="table table-sm table-bordered">
-                            <thead>
-                            <th class="text-center">
-                                所有CPU使用率
-                            </th>
-                            <th>使用率</th>
-                            </thead>
-                            <tbody id="tb_cpu_per">
-                            {% for k,v in enumerate(data['cpu_info']['percent_per']) %}
-                            <tr>
-                                <td class="text-primary" style="width: 30%">
-                                    CPU{{ k }}
-                                </td>
-                                <td>
-                                    <div class="progress">
-                                        <div class="progress-bar {{ handler.progress_status(v)}}"
-                                             role="progressbar" style="width: {{ v }}%"
-                                             aria-valuenow="{{ v }}" aria-valuemin="0" aria-valuemax="100">{{ v }}%
+                        <div class="border border-white">
+                            <table class="table table-sm table-bordered">
+                                <thead>
+                                <th class="text-center">
+                                    所有CPU使用率
+                                </th>
+                                <th>使用率</th>
+                                </thead>
+                                <tbody id="tb_cpu_per">
+                                {% for k,v in enumerate(data['cpu_info']['percent_per']) %}
+                                <tr>
+                                    <td class="text-primary" style="width: 30%">
+                                        CPU{{ k }}
+                                    </td>
+                                    <td>
+                                        <div class="progress">
+                                            <div class="progress-bar {{ handler.progress_status(v)}}"
+                                                 role="progressbar" style="width: {{ v }}%"
+                                                 aria-valuenow="{{ v }}" aria-valuemin="0" aria-valuemax="100">{{ v }}%
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
+                                    </td>
+                                </tr>
+                                {% end %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--内存和交换分区-->
+    <div class="col-md-12">
+        <div class="card text-white bg-dark mb-3">
+            <div class="card-header">内存/交换分区信息</div>
+            <div class="card-body">
+                <div class="row">
+                    <!--内存仪信息-->
+                    <div class="col-md-6 pad-right">
+                        <!--内存信息仪表盘-->
+                        <div class="border border-white">{% raw data['mem_gauge'] %}</div>
+                        <!--内存信息表格-->
+                        <table class="table table-sm table-bordered">
+                            <tr>
+                                <td class="text-primary" style="width: 30%">使用率（%）</td>
+                                <td class="text-danger">{{ data['mem_info']['percent'] }}</td>
                             </tr>
-                            {% end %}
-                            </tbody>
+                            <tr>
+                                <td class="text-primary" style="width: 30%">总量（%）</td>
+                                <td class="text-danger">{{ data['mem_info']['total'] }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-primary" style="width: 30%">使用量（%）</td>
+                                <td class="text-danger">{{ data['mem_info']['used'] }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-primary" style="width: 30%">剩余量（%）</td>
+                                <td class="text-danger">{{ data['mem_info']['free'] }}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!--交换分区仪表板-->
+                    <div class="col-md-6 pad-left">
+                        <!--换分信息仪表盘-->
+                        <div class="border border-white">{% raw data['swap_gauge'] %}</div>
+                        <!--换分信息表格-->
+                        <table class="table table-sm table-bordered">
+                            <tr>
+                                <td class="text-primary" style="width: 30%">使用率（%）</td>
+                                <td class="text-danger">{{ data['swap_info']['percent'] }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-primary" style="width: 30%">总量（%）</td>
+                                <td class="text-danger">{{ data['swap_info']['total'] }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-primary" style="width: 30%">使用量（%）</td>
+                                <td class="text-danger">{{ data['swap_info']['used'] }}</td>
+                            </tr>
+                            <tr>
+                                <td class="text-primary" style="width: 30%">剩余量（%）</td>
+                                <td class="text-danger">{{ data['swap_info']['free'] }}</td>
+                            </tr>
                         </table>
                     </div>
                 </div>
