@@ -105,4 +105,53 @@ function update_ui(e) {
     document.getElementById('swap_total').innerHTML = data['swap']['total'];
     document.getElementById('swap_used').innerHTML = data['swap']['used'];
     document.getElementById('swap_free').innerHTML = data['swap']['free'];
+
+    // 更新网络信息饼状图
+    var net = "";
+    for (var k in data['net']) {
+        var cd = data['net'][k];
+        if (parseInt(cd['bytes_sent']) != 0 && parseInt(cd["bytes_recv"]) != 0) {
+            var index = parseInt(k) + 1;
+            var op = eval("option_net" + index);
+            var ch = eval("myChart_net" + index);
+            op.title[0].text = data["dt"] + "-" + cd["name"] + "网卡信息";
+            op.series[0].data = [
+                {
+                    "value": cd['packets_recv'],
+                    "name": "接收包数"
+                },
+                {
+                    "value": cd['packets_sent'],
+                    "name": "发送包数"
+                }
+            ];
+            op.series[1].data = [
+                {
+                    "value": cd['bytes_recv'],
+                    "name": "接收字节"
+                },
+                {
+                    "value": cd['bytes_sent'],
+                    "name": "发送字节"
+                }
+            ];
+            ch.setOption(op);
+        }
+        // 更新网络信息表
+        net += "<tr><td>" + cd['name'] + "</td>";
+        net += "<td class='text-danger'>" + cd['bytes_sent'] + "</td>";
+        net += "<td class='text-danger'>" + cd['bytes_recv'] + "</td>";
+        net += "<td class='text-danger'>" + cd['packets_sent'] + "</td>";
+        net += "<td class='text-danger'>" + cd['packets_recv'] + "</td>";
+        net += "<td>" + cd['family'] + "</td>";
+        net += "<td>" + cd['address'] + "</td>";
+        net += "<td>" + cd['netmask'] + "</td>";
+        if (cd['broadcast'] != null) {
+            net += "<td>" + cd['broadcast'] + "</td></tr>";
+        } else {
+            net += "<td>无</td></tr>";
+
+        }
+    }
+    document.getElementById('net_info_tb').innerHTML = net;
 }

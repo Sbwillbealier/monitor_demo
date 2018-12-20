@@ -85,7 +85,7 @@ class Chart(object):
             center=[65, 50],
             is_random=True,
             radius=[30, 75],
-            rosetype="area",
+            rosetype="radius",
             is_legend_show=True,
             is_label_show=True,
             legend_pos="right",
