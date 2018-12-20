@@ -42,6 +42,9 @@ class IndexHandler(CommonHandler):
             for k, v in enumerate(net_info) if v['packets_recv'] and v['packets_sent']
         ]
 
+        # 磁盘信息
+        disk_info = m.disk()
+
         self.render('index.html', data=dict(
             cpu_liquid=c.liquid_html('cpu_avg', 'CPU平均使用率', cpu_info['percent_avg']),
             cpu_info=cpu_info,
@@ -51,4 +54,5 @@ class IndexHandler(CommonHandler):
             swap_info=swap_info,
             net_pie=net_pie,
             net_info=net_info,
+            disk_info=disk_info,
         ))

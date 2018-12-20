@@ -22,7 +22,7 @@
                     <!--单个CPU信息表-->
                     <div class="col-md-6 pad-left">
                         <div class="border border-white">
-                            <table class="table table-sm table-bordered">
+                            <table class="table table-sm table-bordered table-hover">
                                 <thead>
                                 <th class="text-center">
                                     所有CPU使用率
@@ -54,6 +54,7 @@
             </div>
         </div>
     </div>
+
     <!--内存和交换分区-->
     <div class="col-md-12">
         <div class="card text-white bg-dark mb-3">
@@ -65,7 +66,7 @@
                         <!--内存信息仪表盘-->
                         <div class="border border-white">{% raw data['mem_gauge'] %}</div>
                         <!--内存信息表格-->
-                        <table class="table table-sm table-bordered">
+                        <table class="table table-sm table-bordered table-hover">
                             <tr>
                                 <td class="text-primary" style="width: 30%">使用率（%）</td>
                                 <td id="mem_percent" class="text-danger">{{ data['mem_info']['percent'] }}</td>
@@ -89,7 +90,7 @@
                         <!--换分信息仪表盘-->
                         <div class="border border-white">{% raw data['swap_gauge'] %}</div>
                         <!--换分信息表格-->
-                        <table class="table table-sm table-bordered">
+                        <table class="table table-sm table-bordered table-hover">
                             <tr>
                                 <td class="text-primary" style="width: 30%">使用率（%）</td>
                                 <td id="swap_percent" class="text-danger">{{ data['swap_info']['percent'] }}</td>
@@ -127,7 +128,7 @@
 
                     <div class="col-md-12">
                         <!--网络信息表-->
-                        <table class="table table-sm table-bordered">
+                        <table class="table table-sm table-bordered table-hover">
                             <thead>
                             <tr class="text-primary">
                                 <td>网卡名称</td>
@@ -158,6 +159,55 @@
                                     {% else %}
                                     无
                                     {% end %}
+                                </td>
+                            </tr>
+                            {% end %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--磁盘信息-->
+    <div class="col-md-12">
+        <div class="card text-white bg-dark mb-3">
+            <div class="card-header">磁盘信息</div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <table class="table table-sm table-bordered table-hover">
+                            <thead>
+                            <tr class="text-primary">
+                                <td style="width: 10%">设备名称</td>
+                                <td style="width: 10%">挂载点</td>
+                                <td style="width: 10%">文件系统类型</td>
+                                <td style="width: 10%">操作选项</td>
+                                <td style="width: 10%">总量（GB）</td>
+                                <td style="width: 10%">使用量（GB）</td>
+                                <td style="width: 10%">剩余量（GB）</td>
+                                <td style="width: 30%">使用率（%）</td>
+                            </tr>
+                            </thead>
+                            <tbody id="disk_info_tb">
+                            {% for disk in data['disk_info']%}
+                            <tr>
+                                <td>{{ disk['device'] }}</td>
+                                <td>{{ disk['mountpoint'] }}</td>
+                                <td>{{ disk['fstype'] }}</td>
+                                <td>{{ disk['opts'] }}</td>
+                                <td>{{ disk['used']['total'] }}</td>
+                                <td>{{ disk['used']['used'] }}</td>
+                                <td>{{ disk['used']['free'] }}</td>
+                                <td>
+                                    <div class="progress">
+                                        <div class="progress-bar {{ handler.progress_status(disk['used']['percent'])}}"
+                                             role="progressbar" style="width: {{ disk['used']['percent'] }}%"
+                                             aria-valuenow="{{ disk['used']['percent'] }}" aria-valuemin="0"
+                                             aria-valuemax="100">{{ disk['used']['percent'] }}%
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                             {% end %}

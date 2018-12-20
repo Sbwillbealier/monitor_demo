@@ -154,4 +154,24 @@ function update_ui(e) {
         }
     }
     document.getElementById('net_info_tb').innerHTML = net;
+
+    // 更新磁盘信息
+    var disk = "";
+    for (var k in data['disk']) {
+        var d = data['disk'][k];
+        disk += "<tr><td>" + d['device'] + "</td>";
+        disk += "<td>" + d['mountpoint'] + "</td>";
+        disk += "<td>" + d['fstype'] + "</td>";
+        disk += "<td>" + d['opts'] + "</td>";
+        disk += "<td>" + d['used']['total'] + "</td>";
+        disk += "<td>" + d['used']['used'] + "</td>";
+        disk += "<td>" + d['used']['free'] + "</td>";
+        disk += "<td><div class='progress'><div class='progress-bar "
+            + progress_status(d['used']['percent'])
+            + "' role='progressbar' style='width: " + d['used']['percent'] +
+            "   aria-valuenow='" + d['used']['percent'] + "' aria-valuemin='0'" +
+            "' aria-valuemax='100'>" + d['used']['percent'] +
+            "</div></div></td></tr>"
+    }
+    document.getElementById('disk_info_tb').innerHTML = disk;
 }
