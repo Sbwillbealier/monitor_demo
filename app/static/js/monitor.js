@@ -83,4 +83,26 @@ function update_ui(e) {
     }
     let tb_cpu_per = document.getElementById('tb_cpu_per');
     tb_cpu_per.innerHTML = cpu_per;
+
+    // 更新内存信息仪表盘
+    option_mem.series[0].data[0].value = data['mem']['percent'];
+    option_mem.title[0].text = data['dt'] + "-内存使用率";
+    myChart_mem.setOption(option_mem);
+
+    // 更新内存信息表格
+    document.getElementById('mem_percent').innerHTML = data['mem']['percent'];
+    document.getElementById('mem_total').innerHTML = data['mem']['total'];
+    document.getElementById('mem_used').innerHTML = data['mem']['used'];
+    document.getElementById('mem_free').innerHTML = data['mem']['free'];
+
+    // 更新交换分区信息仪表盘
+    option_swap.series[0].data[0].value = data['swap']['percent'];
+    option_swap.title[0].text = data['dt'] + "-交换分区使用率";
+    myChart_swap.setOption(option_swap);
+
+    // 更新交换分区信息表格
+    document.getElementById('swap_percent').innerHTML = data['swap']['percent'];
+    document.getElementById('swap_total').innerHTML = data['swap']['total'];
+    document.getElementById('swap_used').innerHTML = data['swap']['used'];
+    document.getElementById('swap_free').innerHTML = data['swap']['free'];
 }

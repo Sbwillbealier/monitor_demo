@@ -5,7 +5,7 @@
 @file:chart.py
 @desc: pyecharts制作部分
 """
-from pyecharts import Liquid, Gauge
+from pyecharts import Liquid, Gauge, Pie
 import datetime
 
 
@@ -51,6 +51,48 @@ class Chart(object):
             is_legend_show=False
         )
         return gauge.render_embed()
+
+    def pie_two_html(self, chart_id, title, sub_title1, sub_title2, key1, value1, key2, value2):
+        """网络信息双饼图"""
+        pie = Pie(
+            title="{}-{}".format(self.dt, title),
+            title_pos='center',
+            width='100%',
+            height=300,
+            title_text_size=14,
+            title_color='white'
+        )
+        # 指定id
+        pie.chart_id = chart_id
+        # 添加数据
+        pie.add(
+            name=sub_title1,
+            attr=key1,
+            value=value1,
+            center=[25, 50],
+            is_random=True,
+            radius=[30, 75],
+            rosetype="radius",
+            is_legend_show=True,
+            is_label_show=True,
+            label_text_size=15,
+            legend_text_size=14,
+        )
+        pie.add(
+            name=sub_title2,
+            attr=key2,
+            value=value2,
+            center=[65, 50],
+            is_random=True,
+            radius=[30, 75],
+            rosetype="area",
+            is_legend_show=True,
+            is_label_show=True,
+            legend_pos="right",
+            legend_orient="vertical",
+            label_text_size=15
+        )
+        return pie.render_embed()
 
     @property
     def dt(self):
