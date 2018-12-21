@@ -11,10 +11,15 @@ function connect() {
 
     // 创建连接对象,并转化协议
     conn = new SockJS('http://127.0.0.1:8000/real/time', transports);
+
+    // 提示未连接
+    log("warning", "正在建立连接...");
+
     // 建立连接
     conn.onopen = function () {
         console.log('open');
         conn.send('test');
+        log("success", "连接成功");
     };
     // 建立接收消息
     conn.onmessage = function (e) {
@@ -24,6 +29,7 @@ function connect() {
     // 关闭连接
     conn.onclose = function () {
         console.log('close');
+        log("danger", "连接断开");
     };
 
     // 每隔一秒发送消息给服务器
@@ -174,4 +180,9 @@ function update_ui(e) {
             "</div></div></td></tr>"
     }
     document.getElementById('disk_info_tb').innerHTML = disk;
+}
+
+// 连接状态提醒
+function log(cls, msg) {
+    document.getElementById('monitor_status').innerHTML = "<div class='alert alert-" + cls + "'>" + msg + "</div>";
 }

@@ -7,6 +7,7 @@
 """
 
 import tornado.web
+from app.tools.monitor import Monitor
 
 
 class CommonHandler(tornado.web.RequestHandler):
@@ -24,3 +25,9 @@ class CommonHandler(tornado.web.RequestHandler):
             data = "bg-danger"  # 红色
 
         return data
+
+    @property
+    def started(self):
+        """开机时间"""
+        m = Monitor()
+        return m.get_last_boot()
