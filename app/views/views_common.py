@@ -3,7 +3,7 @@
 """
 @author:Created by GJ on 2018/12/19
 @file:views_common.py
-@desc: 自定义视图函数的基类，添加方法，使其不同范围的值返回不同的颜色
+@desc: 自定义视图函数的基类，添加方法，使其不同范围的值返回不同的颜色，这些方法可能在几个页面中都需要！
 """
 
 import tornado.web
@@ -31,3 +31,9 @@ class CommonHandler(tornado.web.RequestHandler):
         """开机时间"""
         m = Monitor()
         return m.get_last_boot()
+
+    @property
+    def users(self):
+        """登录用户"""
+        m = Monitor()
+        return m.get_user()

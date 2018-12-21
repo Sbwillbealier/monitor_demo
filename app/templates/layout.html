@@ -37,6 +37,7 @@
                         </a>
                     </li>
                 </ul>
+                <!--开机时间-->
                 <div class="col-md-12">
                     <div class="alert alert-info">开机时间：{{ handler.started }}</div>
                 </div>
@@ -44,6 +45,43 @@
                     <div class="card text-white bg-dark mb-3">
                         <div class="card-header">当前时间</div>
                         <div class="card-body" id="clock"></div>
+                    </div>
+                </div>
+                <!--登录用户信息-->
+                <div class="col-md-12">
+                    <div class="card text-white bg-dark mb-3">
+                        <div class="card-header">当前用户</div>
+                        <div class="card-body">
+                            <table class="table table-sm table-bordered table-hover">
+                                <thead>
+                                <tr class="text-primary">
+                                    <td class="text-center" colspan="2">登录用户信息</td>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {% for user in handler.users %}
+                                <tr>
+                                    <td class="text-primary" style="width: 40%">登录账户</td>
+                                    <td>
+                                        {{ user['name'] }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-primary" style="width: 40%">登录终端</td>
+                                    <td>{{ user['terminal'] }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-primary" style="width: 40%">登录主机</td>
+                                    <td>{{ user['host'] }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="text-primary" style="width: 40%">登录时间</td>
+                                    <td>{{ user['started'] }}</td>
+                                </tr>
+                                {% end %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
