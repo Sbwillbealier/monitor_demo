@@ -124,7 +124,7 @@ class Monitor(object):
                 terminal=u.terminal,
                 host=u.host,
                 started=self.to_datetime(u.started),
-                pid=u.pid,
+                # pid=u.pid,  # suser没有pid属性
             )
             for u in users
         ]
