@@ -14,7 +14,7 @@ class ORM(object):
     """orm模型"""
 
     @staticmethod
-    def db(self):
+    def db():
         """返回数据库操作会话"""
         # 配置连接信息
         mysql_configs = dict(
@@ -33,10 +33,10 @@ class ORM(object):
         engine = create_engine(
             link,
             encoding='utf-8',
-            echo=False,
+            echo=False,  # 显示错误信息
             pool_size=100,  # 连接池大小
             pool_recycle=10,
-            connect_args={"charset": "utf-8"}
+            connect_args={"charset": "utf8"}
         )
 
         # 创建session
@@ -46,4 +46,4 @@ class ORM(object):
             autoflush=True,
             expire_on_commit=False,
         )
-        return Session
+        return Session()

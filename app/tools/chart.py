@@ -5,7 +5,7 @@
 @file:chart.py
 @desc: pyecharts制作部分
 """
-from pyecharts import Liquid, Gauge, Pie
+from pyecharts import Liquid, Gauge, Pie, Line
 import datetime
 
 
@@ -93,6 +93,69 @@ class Chart(object):
             label_text_size=15
         )
         return pie.render_embed()
+
+    def line_html(self, title, key, val, color=None):
+        """折线面积图"""
+        line = Line(
+            title,
+            title_pos='center',
+            width='100%',
+            height=300,
+        )
+        line.add(
+            "",
+            key,
+            val,
+            is_fill=True,  # 是否填充曲线面积
+            mark_point=['average', 'max', 'min'],  # 标记点
+            mark_line=['average'],  # 标记线
+            line_opacity=0.2,
+            area_opacity=0.4,
+            is_datazoom_show=True,  # 缩放
+            datazoom_range=[0, 100],
+            symbol=None,  # 标记图形
+            area_color=color,
+        )
+
+        return line.render_embed()
+
+    def line_three_html(self, title, key, val_min, val_max, val_avg):
+        """折线面积图"""
+        line = Line(
+            title,
+            title_pos='center',
+            width='100%',
+            height=300,
+        )
+        line.add(
+            "最小值",
+            key,
+            val_min,
+            mark_point=['average', 'max', 'min'],  # 标记点
+            is_datazoom_show=True,  # 缩放
+            datazoom_range=[0, 100],
+            is_smooth=True,
+        )
+        line.add(
+            "最大值",
+            key,
+            val_max,
+            mark_point=['average', 'max', 'min'],  # 标记点
+            is_datazoom_show=True,  # 缩放
+            datazoom_range=[0, 100],
+            is_smooth=True,
+        )
+        line.add(
+            "平均值",
+            key,
+            val_avg,
+            mark_point=['average', 'max', 'min'],  # 标记点
+            is_datazoom_show=True,  # 缩放
+            datazoom_range=[0, 100],
+            is_smooth=True,
+        )
+
+        return line.render_embed()
 
     @property
     def dt(self):

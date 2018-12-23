@@ -46,6 +46,7 @@ class IndexHandler(CommonHandler):
         disk_info = m.disk()
 
         self.render('index.html', data=dict(
+            title='系统监控',
             cpu_liquid=c.liquid_html('cpu_avg', 'CPU平均使用率', cpu_info['percent_avg']),
             cpu_info=cpu_info,
             mem_gauge=c.gauge_html('mem', '内存使用率', mem_info['percent']),
