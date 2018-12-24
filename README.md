@@ -21,17 +21,29 @@ pip install -r requirements.txt
 ```
 4. 迁移数据库
 ```
-python app\models\models.py
+# 先在mysql数据库中创建monitor数据库
+create database monitor charset=utf-8;
+
+# 创建完数据库再执行下列创建表格命令
+python app\models\models.py  # windows
+python app/models/models.py  # linux
 ```
-5. 运行程序
+
+5. 修改monitor.js文件
+```html
+// 创建连接对象,并转化协议
+conn = new SockJS('http://127.0.0.1:8000/real/time', transports); // 127.0.0.1:8000 换成实际运行主机ip和绑定端口
+```
+
+6. 运行程序
 ``` 
 python manage.py --port=8000  # 指定端口
 ```
-6. 运行日志采集脚本
+7. 运行日志采集脚本
 ```
 python log.py  # 单独运行采集内存/交换分区/cpu使用率
 ```
-7. 查看
+8. 查看
 ```
 127.0.0.1:8000
 ```
