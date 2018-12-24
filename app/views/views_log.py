@@ -38,7 +38,7 @@ class LogHandler(CommonHandler):
                     'red'
                 )
             else:
-                data['line_mem'] = "<div class='alert alert-danger'>没有cpu使用率数据[1小时内]</div>"
+                data['line_cpu'] = "<div class='alert alert-danger'>没有cpu使用率数据[1小时内]</div>"
 
             # 交换区折线图
             if attr_swap and vals_swap:
@@ -109,7 +109,7 @@ class LogHandler(CommonHandler):
             attr_swap, vals_swap_min, vals_swap_max, vals_swap_avg, \
             attr_cpu, vals_cpu_min, vals_cpu_max, vals_cpu_avg = self.data_by_three(
                 method="month",
-                format="%Y%m%d"
+                format="%Y-%m-%d"
             )
             if attr_mem and vals_mem_min and vals_mem_max and vals_mem_avg:
                 data['line_mem'] = c.line_three_html(
@@ -146,26 +146,26 @@ class LogHandler(CommonHandler):
 
     def data_by_hour(self):
         """获取一小时内的数据"""
-        now_time, next_time = self.date_range()
+        now_time, last_time = self.date_range()
         attr_cpu, attr_swap, attr_mem = None, None, None  # 属性
         vals_cpu, vals_swap, vals_mem = None, None, None  # 值
 
         session = ORM.db()
         try:
             # cpu
-            cpu = self.one_hour_query(model=Cpu, session=session, now_time=now_time, next_time=next_time)
+            cpu = self.one_hour_query(model=Cpu, session=session, now_time=now_time, last_time=last_time)
             if cpu:
                 attr_cpu = [v.create_time.strftime("%H:%M:%S") for v in cpu]
                 vals_cpu = [float(v.percent) for v in cpu]
 
             # 交换区
-            swap = self.one_hour_query(model=Swap, session=session, now_time=now_time, next_time=next_time)
+            swap = self.one_hour_query(model=Swap, session=session, now_time=now_time, last_time=last_time)
             if swap:
                 attr_swap = [v.create_time.strftime("%H:%M:%S") for v in swap]
                 vals_swap = [float(v.percent) for v in swap]
 
             # 内存
-            mem = self.one_hour_query(model=Mem, session=session, now_time=now_time, next_time=next_time)
+            mem = self.one_hour_query(model=Mem, session=session, now_time=now_time, last_time=last_time)
             if mem:
                 attr_mem = [v.create_time.strftime("%H:%M:%S") for v in mem]
                 vals_mem = [float(v.percent) for v in mem]  # decimal不能转化为json，需要转换为float
@@ -178,19 +178,19 @@ class LogHandler(CommonHandler):
 
         return attr_cpu, attr_swap, attr_mem, vals_cpu, vals_swap, vals_mem
 
-    def one_hour_query(self, model, session, now_time, next_time):
+    def one_hour_query(self, model, session, now_time, last_time):
         """
-        查询一小时内的model，范围为create_dt[now_time, next_time)
+        查询一小时内的model，范围为create_dt[now_time, last_time)
         """
         data = session.query(model).order_by(model.create_dt.asc()).filter(
             and_(
-                model.create_dt >= now_time.strftime("%Y-%m-%d %H") + ":00:00",
-                model.create_dt < next_time.strftime("%Y-%m-%d %H") + ":00:00"
+                model.create_dt < now_time.strftime("%Y-%m-%d %H") + ":00:00",
+                model.create_dt >= last_time.strftime("%Y-%m-%d %H") + ":00:00"
             )
         ).all()
         return data
 
-    def data_by_three(self, method='day', format="%Y%m%d%H"):
+    def data_by_three(self, method='day', format="%Y-%m-%d %H"):
         """按照小时和天查询今天和本月最大最小值"""
         session = ORM.db()
         attr_mem, vals_mem_min, vals_mem_max, vals_mem_avg = None, None, None, None
@@ -219,6 +219,7 @@ class LogHandler(CommonHandler):
                 vals_cpu_max = [float(v[2]) for v in cpu]
                 vals_cpu_avg = [round(float(v[3]), 1) for v in cpu]
         except Exception as e:
+            print('获取失败：{}'.format(e))
             session.rollback()
         else:
             session.commit()
@@ -228,7 +229,7 @@ class LogHandler(CommonHandler):
                attr_swap, vals_swap_min, vals_swap_max, vals_swap_avg, \
                attr_cpu, vals_cpu_min, vals_cpu_max, vals_cpu_avg
 
-    def three_query(self, model, session, method="day", format="%Y%m%d%H"):
+    def three_query(self, model, session, method="day", format="%Y-%m-%d %H"):
         """查询最大值、最小值、平均值"""
         model_query = session.query(
             func.date_format(model.create_dt, format),
@@ -237,28 +238,28 @@ class LogHandler(CommonHandler):
             func.avg(model.percent)
         )
         data = None
+
         if method == "day":
-            # 过滤出今天的数据
-            # 按照小时分组
-            # 按照时间升序排序
             data = model_query.filter(
-                func.to_days(model.create_dt) == func.to_days(func.now())
+                func.to_days(model.create_dt) == func.to_days(func.now())  # 过滤出今天的数据
             ).group_by(
-                func.date_format(model.create_dt, format)
-            ).order_by(model.create_dt.asc()).all()
+                func.date_format(model.create_dt, format)  # 按照小时分组
+            ).order_by(
+                func.date_format(model.create_dt, format).asc()  # 按照时间升序排序
+            ).all()
+
         if method == "month":
-            # 过滤出当前月的数据
-            # 按照天来分组
-            # 按照时间升序排序
             data = model_query.filter(
-                func.date_format(model.create_dt, "%Y%m") == func.date_format(func.curdate(), "%Y%m")
+                func.date_format(model.create_dt, "%Y-%m") == func.date_format(func.curdate(), "%Y-%m")  # 过滤前月的数据
             ).group_by(
-                model.create_date
-            ).order_by(model.create_dt.asc()).all()
+                func.date_format(model.create_dt, format)  # 按照天来分组
+            ).order_by(
+                func.date_format(model.create_dt, format).asc()  # 按照时间升序排序
+            ).all()
         return data
 
     def date_range(self):
         """获取时间范围"""
         now_time = datetime.datetime.now()
-        next_time = now_time + datetime.timedelta(hours=1)  # 下一小时
-        return now_time, next_time
+        last_time = now_time - datetime.timedelta(hours=1)  # 上一小时
+        return now_time, last_time

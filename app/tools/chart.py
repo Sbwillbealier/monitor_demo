@@ -123,7 +123,7 @@ class Chart(object):
         """折线面积图"""
         line = Line(
             title,
-            title_pos='center',
+            title_pos='left',
             width='100%',
             height=300,
         )
